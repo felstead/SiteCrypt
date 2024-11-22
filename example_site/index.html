@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>SiteCrypt Protected Page</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark" />
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.blue.min.css"
+  
+</head>
+
+<body>
+  <main class="container">
+    <!-- The header will NOT be password protected -->
+    <header>
+      <h1>Welcome to my secret site!</h1>
+    </header>
+    <!-- The content of this div will be replaced with a login form prompting the user for the password -->
+    <div id="main" class="_protected">
+      <section>
+        <h2>Secret plans for world domination!!!</h2>
+        <ul>
+          <!-- Each of these pages will be password protected, and if you try to navigate to them directly, you'll be redirected back to the landing page -->
+          <li>Step 1: <a href="/step1.html">Open a coffee shop</a></li>
+          <li>Step 2: <a href="/step2.html">TBD</a></li>
+          <li>Step 3: <a href="/step3.html">Achieve world domination!</a></li>
+        </ul>
+      </section>
+    </div>
+    <!-- You can protect multiple sections and they will all be restored when the user enters the correct password -->
+    <footer class="_protected">
+      <p>&copy; 2024 - World Domination Inc.</p>
+    </footer>
+  </main>
+</body>
+
+</html>

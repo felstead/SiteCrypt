@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "nodemon",
+    "build": "tsc",
+    "start": "node dist/main"
+  },
+  "devDependencies": {
+    "@types/cheerio": "^0.22.35",
+    "@types/node": "^22.9.1",
+    "dotenv": "^16.0.3",
+    "nodemon": "^3.1.7",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0"
+  }
+}
