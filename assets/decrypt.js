@@ -36,7 +36,7 @@ async function decrypt(encryptedContentBase64, password) {
   return decrypted;
 }
 
-async function decryptPage(password) {
+async function decryptLoginPage(password) {
   let decryptedContent = [];
   try {
     for (encrypted of encryptedContent) {
@@ -55,7 +55,7 @@ async function decryptPage(password) {
 async function doSubmit(e) {
   hideError();
   e.preventDefault();
-  decryptPage(document.getElementById('_sitecryptPassword').value);
+  decryptLoginPage(document.getElementById('_sitecryptPassword').value);
 }
 
 function hideError() {
@@ -68,7 +68,7 @@ function showError(errorMessage) {
   errorElement.textContent = errorMessage;
 }
 
-function setup() {
+function setupLoginPage() {
   // Sanity checks
   let passwordForm = document.getElementById('_sitecryptPasswordForm');
 
@@ -91,4 +91,17 @@ function setup() {
   }
 
   document.getElementById('_sitecryptPasswordForm').addEventListener('submit', doSubmit);
+}
+
+async function setupSubPage(redir) {
+  if (window.location.hash.startsWith('#key=')) {
+    try {
+      let key = window.location.hash.substring(5);
+      const decrypted = await decrypt(encryptedContent, key);
+      document.write(decrypted);
+    } catch(e) {
+      // Password was incorrect
+      window.location.href = redir + '#from=' + window.location.pathname;
+    }
+  }
 }
