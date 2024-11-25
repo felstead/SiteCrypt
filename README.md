@@ -13,7 +13,7 @@ SiteCrypt will take your static HTML content and password protect it using the c
 It expects that you will have a "login" page and that all other pages under that will redirect back to that page when the password has not been supplied.
 
 To run it:
-`npm sitecrypt --base_dir "./built_html" --login-page "index.html" --encrypt-pages "*.html" --redirect-path "/"
+`npm run encrypt -- --input-path=./example_site --output-path=./example_site_built --password=supersecret123 --login-file=index.html --login-redirect=/`
 
 1. Install
 2. Mark up your landing page by adding an HTML class to the main content you want to password protect.  This will replace that content with the login form, e.g.
@@ -29,7 +29,7 @@ To run it:
           <h1>Welcome to my secret site!</h1>
         </header>
         <!-- The content of this div will be replaced with a login form prompting the user for the password -->
-        <div id="main" class="_protected">
+        <div id="main" class="_siteCrypt-protected">
           <section>
             <h2>Secret plans for world domination!!!</h2>
             <ul>
@@ -40,7 +40,7 @@ To run it:
             </ul>
           </section>
         </div>
-        <footer class="_protected">
+        <footer class="_siteCrypt-protected">
           <p>&copy; 2024 - Definitely Not World Domination Inc.</p>
         </footer>
       </body>

@@ -18,20 +18,32 @@
     <header>
       <h1>Welcome to my secret site!</h1>
     </header>
+    <div id="intro">
+      <section>
+        <p>This is an example site that is encrypted using <a href="https://github.com/felstead/SiteCrypt">SiteCrypt</a>.  It consists of this page (the login page) and three other encrypted sub-pages linked here:</p>
+        <ul>
+          <li><a href="step1.html">Step 1</a></li>
+          <li><a href="step2.html">Step 2</a></li>
+          <li><a href="step3.html">Step 3</a></li>
+        </ul>
+        <p>If you try to click on these without entering the password, you'll notice that you're redirected back to this page.</p>
+        <p>If you enter the password <b>secret123</b> below, the protected portions of the page will be shown, and you'll be able to navigate to the sub-pages, effectively logging you in.</p>
+      </section>
+    </div>
     <!-- The content of this div will be replaced with a login form prompting the user for the password -->
-    <div id="main" class="_protected">
+    <div id="main" class="_siteCrypt-protected">
       <section>
         <h2>Secret plans for world domination!!!</h2>
         <ul>
           <!-- Each of these pages will be password protected, and if you try to navigate to them directly, you'll be redirected back to the landing page -->
-          <li>Step 1: <a href="/step1.html">Open a coffee shop</a></li>
-          <li>Step 2: <a href="/step2.html">TBD</a></li>
-          <li>Step 3: <a href="/step3.html">Achieve world domination!</a></li>
+          <li>Step 1: <a href="step1.html">Open a coffee shop</a></li>
+          <li>Step 2: <a href="step2.html">TBD</a></li>
+          <li>Step 3: <a href="step3.html">Achieve world domination!</a></li>
         </ul>
       </section>
     </div>
     <!-- You can protect multiple sections and they will all be restored when the user enters the correct password -->
-    <footer class="_protected">
+    <footer class="_siteCrypt-protected">
       <p>&copy; 2024 - World Domination Inc.</p>
     </footer>
   </main>

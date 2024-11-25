@@ -1,0 +1,81 @@
+<!DOCTYPE html><html><head>
+  <title>SiteCrypt Protected Page</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.blue.min.css">
+<style>#_siteCrypt-passwordForm input {
+    margin: 0 5px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#_siteCrypt-passwordError {
+    color: red;
+};</style><script>async function decrypt(e,t){const r=window.atob(e),o=r.length,n=new Uint8Array(o);for(let e=0;e<o;e++)n[e]=r.charCodeAt(e);const s=n.buffer,i=s.slice(0,32),c=s.slice(32,48),a=s.slice(48),d=new TextEncoder,y=await crypto.subtle.importKey("raw",d.encode(t),"PBKDF2",!1,["deriveKey"]),p=await crypto.subtle.deriveKey({name:"PBKDF2",salt:i,iterations:6e5,hash:"SHA-256"},y,{name:"AES-GCM",length:256},!0,["decrypt"]),l=new Uint8Array(await crypto.subtle.decrypt({name:"AES-GCM",iv:c},p,a));return(new TextDecoder).decode(l)}async function decryptLoginPage(e){let t=[];try{for(encrypted of encryptedContent){const r=await decrypt(encrypted,e);t.push(r)}for(element of document.getElementsByClassName("_siteCrypt-protected"))element.innerHTML=t.shift()}catch(e){console.log(e),showError("Incorrect password")}}async function doSubmit(e){hideError(),e.preventDefault(),decryptLoginPage(document.getElementById("_siteCrypt-password").value)}function hideError(){document.getElementById("_siteCrypt-passwordError").style.display="none"}function showError(e){let t=document.getElementById("_siteCrypt-passwordError");t.style.display="",t.textContent=e}function setupLoginPage(){document.getElementById("_siteCrypt-passwordForm")?isSecureContext?crypto.subtle?document.getElementById("_siteCrypt-passwordForm").addEventListener("submit",doSubmit):showError("This browser does not support the Web Crypto API"):showError("This page must be served over HTTPS to use SiteCrypt"):alert("Password form not found!  Please ensure the page is set up correctly.")}async function setupSubPage(e){if(window.location.hash.startsWith("#key="))try{let e=window.location.hash.substring(5);const t=await decrypt(encryptedContent,e);return void document.write(t)}catch(e){console.log("Password was incorrect, redirecting to login page")}window.location.href=e+"#from="+window.location.pathname}
+;const encryptedContent = ["HLvkWeGuHJMWGho07vG++I5vaupCzabEZJh1BoEix+9ZyYIsGYrpya6SeVEIwWt8Wb9TEXeaSKIc2lihibnQZL2R9pnegnn1mRmLO7x76/8lONLhdlH/WfDmDZR81LUJZTWMVgBtl76l+4HD2pD3OIaNcFxI75ZtCmXDW05/W8hJmEc8577azFjMbkgiiS5SctNK2kauD92zj63wrJYPoutbMLCDBC5YNV+UxU+r3ruPyDBXuB6kwx/m5z2MDNMDfxIYMH62UUWBNDLMMEI3GTTiGLxHXM5hGK1KguJ2pwsSVOBb34L7QYeNHW8u0jCWINnMuKIyJ3e4uaGb4ZumCoTHI/wWGQBXTD1Uy+zSs3myxRMvBZzgJ+nWC2SrCz8kKSAsXCEcwKSRxNX8xYuUTWBer4TPuqL41eVhX2zptbpruTNaANEZvmff8m1RJ3xO0EXE1WYbJZAQYY9fPyGKxnWhebskHfSe98QE9Oz6RO8a8VBZzN2bKe/TRLqwXnaenlAsY1YI8MWOHkNf+0/OkbTkdxU5NMKEga0M3vbMA/PkJhAF0Zlf6gacNLJ4mdyciaDXdrbCU2pwCpACsWgXzQKCQO8N5/5XUHGUWkNaMqFN3k2jbHWO1xQO9gffihrAzJqwXISKrQKATI0IreQA7aYRFSzyRwMMlhX48NNaE/oO7MjfRrGiyUdcB+EsYcECGkoTMVLCjYrpHQeN3zSt2dca","0xOyCQs57YbWKKMwRyaTrz8rvaFEU8DoXMz9pJSzgEXvT2t2TdRYg6AugLKT3DC7/gedN3ovjVm1fkTzEhmiX+1eidjOa1dzmPvFOOKdqGjHrQAgr0IaFd6d853zGOOR+D4/M5MVYxN0DzKU7L7aazmv"];</script></head>
+
+<body>
+  <main class="container">
+    <!-- The header will NOT be password protected -->
+    <header>
+      <h1>Welcome to my secret site!</h1>
+    </header>
+    <div id="intro">
+      <section>
+        <p>This is an example site that is encrypted using <a href="https://github.com/felstead/SiteCrypt">SiteCrypt</a>.  It consists of this page (the login page) and three other encrypted sub-pages linked here:</p>
+        <ul>
+          <li><a href="step1.html">Step 1</a></li>
+          <li><a href="step2.html">Step 2</a></li>
+          <li><a href="step3.html">Step 3</a></li>
+        </ul>
+        <p>If you try to click on these without entering the password, you'll notice that you're redirected back to this page.</p>
+        <p>If you enter the password <b>secret123</b> below, the protected portions of the page will be shown, and you'll be able to navigate to the sub-pages, effectively logging you in.</p>
+      </section>
+    </div>
+    <!-- The content of this div will be replaced with a login form prompting the user for the password -->
+    <div id="main" class="_siteCrypt-protected"><form id="_siteCrypt-passwordForm">
+  <fieldset>
+    <label for="pwd">Password:
+    <input type="password" id="_siteCrypt-password" name="pwd" aria-label="Password" autofocus="">
+    </label>
+    <input type="submit" value="Submit">
+  </fieldset>
+  <p id="_siteCrypt-passwordError" style="display:none;">
+  </p>
+</form>
+</div>
+    <!-- You can protect multiple sections and they will all be restored when the user enters the correct password -->
+    <footer class="_siteCrypt-protected"><!-- ENCRYPTED SECTION --></footer>
+  </main>
+
+
+<script>setupLoginPage()</script></body></html><!--
+ Page generated by SiteCrypt: https://github.com/felstead/SiteCrypt
+
+MIT License
+
+Copyright (c) 2024 David Felstead
+Copyright (c) 2021 Maximillian Laumeister
+Copyright (c) 2021 Samuel Plumppu
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-->

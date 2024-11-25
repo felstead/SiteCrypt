@@ -1,0 +1,8 @@
+{
+    "js": {
+        "type": "terser",
+        "terser": {
+            "keep_fnames": true
+        }
+    }
+}

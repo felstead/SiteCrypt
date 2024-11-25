@@ -1,9 +1,9 @@
 {
   "private": true,
   "scripts": {
-    "dev": "nodemon",
-    "build": "tsc",
-    "start": "node dist/main"
+    "build": "tsc && minify assets/decrypt.js > assets/decrypt.min.js",
+    "encrypt": "node dist/main",
+    "build-example-site": "npm run build && npm run encrypt -- --input-path=./example_site --output-path=./example_site_built --password=secret123 --login-file=index.html --login-redirect=index.html"
   },
   "devDependencies": {
     "@types/cheerio": "^0.22.35",
@@ -11,10 +11,12 @@
     "dotenv": "^16.0.3",
     "nodemon": "^3.1.7",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "minify": "^12.0.0"
   },
   "dependencies": {
     "cheerio": "^1.0.0",
     "command-line-args": "^6.0.1"
-  }
+  },
+  "main": "dist/main.js"
 }
