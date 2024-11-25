@@ -89,10 +89,7 @@ let SiteCrypt = {
       SiteCrypt.showError("This browser does not support the Web Crypto API");
       return;
     }
-  
-    document.getElementById('_siteCrypt-passwordForm').addEventListener('submit', SiteCrypt.doSubmit);
-  },
-  setupSubPage: async function setupSubPage(redir) {
+
     let password = null;
     if (window.location.hash.startsWith('#pw=')) {
       password = window.location.hash.substring(4);
@@ -100,6 +97,14 @@ let SiteCrypt = {
       password = SiteCrypt.getStoredPassword();
     }
   
+    passwordForm.addEventListener('submit', SiteCrypt.doSubmit);
+    if (password) {
+      document.getElementById('_siteCrypt-password').value = password;
+      passwordForm.requestSubmit();
+    }
+  },
+  setupSubPage: async function setupSubPage(redir) {
+    let password = SiteCrypt.getStoredPassword();
     if (password) {
       try {
         const decrypted = await SiteCrypt.decrypt(SiteCrypt.allEncryptedContentBase64, password);
@@ -117,7 +122,14 @@ let SiteCrypt = {
     sessionStorage.setItem('_siteCrypt-password', password);
   },
   getStoredPassword: function getStoredPassword() {
-    return sessionStorage.getItem('_siteCrypt-password');
+    let password = null;
+    if (window.location.hash.startsWith('#pw=')) {
+      password = window.location.hash.substring(4);
+    } else {
+      password = sessionStorage.getItem('_siteCrypt-password');
+    }
+  
+    return password;
   },
   logout: function logout() {
     sessionStorage.removeItem('_siteCrypt-password');
