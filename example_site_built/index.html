@@ -13,22 +13,23 @@
 
 #_siteCrypt-passwordError {
     color: red;
-};</style><script>async function decrypt(e,t){const r=window.atob(e),o=r.length,n=new Uint8Array(o);for(let e=0;e<o;e++)n[e]=r.charCodeAt(e);const s=n.buffer,i=s.slice(0,32),c=s.slice(32,48),a=s.slice(48),d=new TextEncoder,y=await crypto.subtle.importKey("raw",d.encode(t),"PBKDF2",!1,["deriveKey"]),p=await crypto.subtle.deriveKey({name:"PBKDF2",salt:i,iterations:6e5,hash:"SHA-256"},y,{name:"AES-GCM",length:256},!0,["decrypt"]),l=new Uint8Array(await crypto.subtle.decrypt({name:"AES-GCM",iv:c},p,a));return(new TextDecoder).decode(l)}async function decryptLoginPage(e){let t=[];try{for(encrypted of encryptedContent){const r=await decrypt(encrypted,e);t.push(r)}for(element of document.getElementsByClassName("_siteCrypt-protected"))element.innerHTML=t.shift()}catch(e){console.log(e),showError("Incorrect password")}}async function doSubmit(e){hideError(),e.preventDefault(),decryptLoginPage(document.getElementById("_siteCrypt-password").value)}function hideError(){document.getElementById("_siteCrypt-passwordError").style.display="none"}function showError(e){let t=document.getElementById("_siteCrypt-passwordError");t.style.display="",t.textContent=e}function setupLoginPage(){document.getElementById("_siteCrypt-passwordForm")?isSecureContext?crypto.subtle?document.getElementById("_siteCrypt-passwordForm").addEventListener("submit",doSubmit):showError("This browser does not support the Web Crypto API"):showError("This page must be served over HTTPS to use SiteCrypt"):alert("Password form not found!  Please ensure the page is set up correctly.")}async function setupSubPage(e){if(window.location.hash.startsWith("#key="))try{let e=window.location.hash.substring(5);const t=await decrypt(encryptedContent,e);return void document.write(t)}catch(e){console.log("Password was incorrect, redirecting to login page")}window.location.href=e+"#from="+window.location.pathname}
-;const encryptedContent = ["HLvkWeGuHJMWGho07vG++I5vaupCzabEZJh1BoEix+9ZyYIsGYrpya6SeVEIwWt8Wb9TEXeaSKIc2lihibnQZL2R9pnegnn1mRmLO7x76/8lONLhdlH/WfDmDZR81LUJZTWMVgBtl76l+4HD2pD3OIaNcFxI75ZtCmXDW05/W8hJmEc8577azFjMbkgiiS5SctNK2kauD92zj63wrJYPoutbMLCDBC5YNV+UxU+r3ruPyDBXuB6kwx/m5z2MDNMDfxIYMH62UUWBNDLMMEI3GTTiGLxHXM5hGK1KguJ2pwsSVOBb34L7QYeNHW8u0jCWINnMuKIyJ3e4uaGb4ZumCoTHI/wWGQBXTD1Uy+zSs3myxRMvBZzgJ+nWC2SrCz8kKSAsXCEcwKSRxNX8xYuUTWBer4TPuqL41eVhX2zptbpruTNaANEZvmff8m1RJ3xO0EXE1WYbJZAQYY9fPyGKxnWhebskHfSe98QE9Oz6RO8a8VBZzN2bKe/TRLqwXnaenlAsY1YI8MWOHkNf+0/OkbTkdxU5NMKEga0M3vbMA/PkJhAF0Zlf6gacNLJ4mdyciaDXdrbCU2pwCpACsWgXzQKCQO8N5/5XUHGUWkNaMqFN3k2jbHWO1xQO9gffihrAzJqwXISKrQKATI0IreQA7aYRFSzyRwMMlhX48NNaE/oO7MjfRrGiyUdcB+EsYcECGkoTMVLCjYrpHQeN3zSt2dca","0xOyCQs57YbWKKMwRyaTrz8rvaFEU8DoXMz9pJSzgEXvT2t2TdRYg6AugLKT3DC7/gedN3ovjVm1fkTzEhmiX+1eidjOa1dzmPvFOOKdqGjHrQAgr0IaFd6d853zGOOR+D4/M5MVYxN0DzKU7L7aazmv"];</script></head>
+};</style><script>let SiteCrypt={allEncryptedContentBase64:[],decrypt:async function decrypt(t,e){const r=window.atob(t),o=r.length,s=new Uint8Array(o);for(let t=0;t<o;t++)s[t]=r.charCodeAt(t);const n=s.buffer,i=n.slice(0,32),a=n.slice(32,48),d=n.slice(48),c=new TextEncoder,p=await crypto.subtle.importKey("raw",c.encode(e),"PBKDF2",!1,["deriveKey"]),y=await crypto.subtle.deriveKey({name:"PBKDF2",salt:i,iterations:6e5,hash:"SHA-256"},p,{name:"AES-GCM",length:256},!0,["decrypt"]),l=new Uint8Array(await crypto.subtle.decrypt({name:"AES-GCM",iv:a},y,d));return(new TextDecoder).decode(l)},decryptLoginPage:async function decryptLoginPage(t){let e=[];try{for(encrypted of SiteCrypt.allEncryptedContentBase64){const r=await SiteCrypt.decrypt(encrypted,t);e.push(r)}for(element of document.getElementsByClassName("_siteCrypt-protected"))element.innerHTML=e.shift();SiteCrypt.storePassword(t)}catch(t){console.log(t),SiteCrypt.showError("Incorrect password")}},doSubmit:async function doSubmit(t){SiteCrypt.hideError(),t.preventDefault(),SiteCrypt.decryptLoginPage(document.getElementById("_siteCrypt-password").value)},hideError:function hideError(){document.getElementById("_siteCrypt-passwordError").style.display="none"},showError:function showError(t){let e=document.getElementById("_siteCrypt-passwordError");e.style.display="",e.textContent=t},setupLoginPage:function setupLoginPage(){document.getElementById("_siteCrypt-passwordForm")?isSecureContext?crypto.subtle?document.getElementById("_siteCrypt-passwordForm").addEventListener("submit",SiteCrypt.doSubmit):SiteCrypt.showError("This browser does not support the Web Crypto API"):showError("This page must be served over HTTPS to use SiteCrypt"):alert("Password form not found!  Please ensure the page is set up correctly.")},setupSubPage:async function setupSubPage(t){let e=null;if(e=window.location.hash.startsWith("#pw=")?window.location.hash.substring(4):SiteCrypt.getStoredPassword(),e)try{const t=await SiteCrypt.decrypt(SiteCrypt.allEncryptedContentBase64,e);return document.write(t),void SiteCrypt.storePassword(e)}catch(t){console.log("Password was incorrect, redirecting to login page")}window.location.href=t+"#from="+window.location.pathname},storePassword:function storePassword(t){sessionStorage.setItem("_siteCrypt-password",t)},getStoredPassword:function getStoredPassword(){return sessionStorage.getItem("_siteCrypt-password")},logout:function logout(){sessionStorage.removeItem("_siteCrypt-password"),window.location.reload()}};
+;SiteCrypt.allEncryptedContentBase64 = ["Y0YYRa5eePOeA5RwDgdNqp1lkECbuxXI1M9aHrMPoVuvn9q/15BaT+qkeDOJj71gBAIt+IzPGE14jDKxQL2Mi7iuKOIvDnrK9RtfHXnecwzCd1tlkUkZcdIHYLhYBNY6Bk2xGgxV2bcouW1eoqJ2jccAWpArpGEpe0IdlPd/TyzhhcjPHOcOm+YZxZxvgz6XO2Mf0vzC1eLv9yGJSiHeR0Tm4lexHZlX4KCy1t9ybkxA6VKIc2Y69sB7LEJTsFCroBmBW0lggGoGDZyDNeL6zIstVu+fiEPrT3n8WAkT6T9czyZaLO5EglXm22mLqR2ZjJA1QV0O33a1s9ajb2788Q4OfiuBBKK86syPD+DZEdkAXOOWs5g5/oeh9Pc9mTH1Ao2NJN3AktYyiRzl0UvFY0rBjvBhkS6u30jfZkYIB8W2657nOjbXfF/xBhNQaUeniu10q6M7rS2Eb84ymjweHM+yTr2rVUGplcXW/JDI6lAoR/emK6H1sLJgHHXmfByfvlH7uBLF6/RVsIH45mSGrIRjeIjfUXau96fVkqxNT42EKSZaivE+jozmHcrwFhDOgQbe/pIZscTUxPbezWeNsABXyR5ufUDAZmWx5spEjDt8RS3FhpFhpg8Rpg8y05ihgzPWhu8MyiIfJWbn0F3yCKUHUrdgr0l3NiNSmGbLPzA5rCpqJapveKsHfgR4VKoN30jigHjS9AQ6MBJoaxK2KZZJaZ8Pikol6yquTaIUYmlhu14Ax9I6WY2OLBh8anYCrtQHBE/yNGvVNyrQCevOMpHP8ut/vQvMVey7Ng5u1I2fMBFAd77DLPFkNeEkGy9uD5tNgHd2gcJAlg3hCqXoLUQnRxgpUQfKlDMc/Qnn+i8Mj9m1Xn116ncs9CpgvfhL8VvOWA1oxXvkfs56l48SUwhl5nopmtNRjUueduYCzKdQWzNJJNjMS86sw53bctv0qMQrzZiz1mbPvY2xhRrHeC6SYEyZrWEDY3uUqo98LnTBpm82yw15wQ==","XZOKMXwVMDVXjzlnw6Xv9/LKciFdOJBhUEJj0IKeOEwbTCGMeG/YjcYOXi0hUSAxZsqJJAzk7nA4IvADm6VUTPP4vh3dTKfUfLLxdm7cJURw5opso8+NBDBo9JbW4oxoSKbqe3d9vc0fW8BI1c+NbznC"];</script></head>
 
 <body>
   <main class="container">
     <!-- The header will NOT be password protected -->
     <header>
-      <h1>Welcome to my secret site!</h1>
+      <h1>Welcome to this example site protected by SiteCrypt</h1>
     </header>
     <div id="intro">
       <section>
-        <p>This is an example site that is encrypted using <a href="https://github.com/felstead/SiteCrypt">SiteCrypt</a>.  It consists of this page (the login page) and three other encrypted sub-pages linked here:</p>
+        <p>This is an example, fully static, site with no backend that is encrypted and password protected using <a href="https://github.com/felstead/SiteCrypt">SiteCrypt</a>.  If you want to create your own password protected static site to deploy on something like <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteHosting.html">AWS S3 Static Websites</a>, <a href="https://render.com/docs/static-sites">Render Static Sites</a>, <a href="https://pages.cloudflare.com/">Cloudflare Pages</a> or similar, simply follow the instructions on the <a href="https://github.com/felstead/SiteCrypt">SiteCrypt GitHub page</a>.
+        </p><p>This site consists of this page (the login page) and three other encrypted sub-pages linked here:</p>
         <ul>
-          <li><a href="step1.html">Step 1</a></li>
-          <li><a href="step2.html">Step 2</a></li>
-          <li><a href="step3.html">Step 3</a></li>
+          <li><a href="steps/step1.html">Step 1</a></li>
+          <li><a href="steps/step2.html">Step 2</a></li>
+          <li><a href="steps/step3.html">Step 3</a></li>
         </ul>
         <p>If you try to click on these without entering the password, you'll notice that you're redirected back to this page.</p>
         <p>If you enter the password <b>secret123</b> below, the protected portions of the page will be shown, and you'll be able to navigate to the sub-pages, effectively logging you in.</p>
@@ -51,7 +52,8 @@
   </main>
 
 
-<script>setupLoginPage()</script></body></html><!--
+<script>SiteCrypt.setupLoginPage()</script></body></html>
+<!--
  Page generated by SiteCrypt: https://github.com/felstead/SiteCrypt
 
 MIT License
@@ -77,5 +79,4 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
 -->

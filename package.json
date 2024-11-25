@@ -3,7 +3,7 @@
   "scripts": {
     "build": "tsc && minify assets/decrypt.js > assets/decrypt.min.js",
     "encrypt": "node dist/main",
-    "build-example-site": "npm run build && npm run encrypt -- --input-path=./example_site --output-path=./example_site_built --password=secret123 --login-file=index.html --login-redirect=index.html"
+    "build-example-site": "npm run build && npm run encrypt -- --input-path=./example_site --output-path=./example_site_built --password=secret123 --login-file=index.html --login-redirect=/SiteCrypt/"
   },
   "devDependencies": {
     "@types/cheerio": "^0.22.35",

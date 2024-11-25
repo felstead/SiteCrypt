@@ -144,14 +144,14 @@ async function main() {
           // Insert the HTML/CSS/JS
           $('head').append($('<style>').text(style));
 
-          $('head').append($(`<script>${decrypterCode};const encryptedContent = ${JSON.stringify(encryptedSections)};</script>`));
-          $('body').append($('<script>setupLoginPage()</script>'));
+          $('head').append($(`<script>${decrypterCode};SiteCrypt.allEncryptedContentBase64 = ${JSON.stringify(encryptedSections)};</script>`));
+          $('body').append($('<script>SiteCrypt.setupLoginPage()</script>'));
 
           output = $.html();
         } else {
           // Generate file as a sub-page
           let encrypted = await encryptToBase64(html, password);
-          output = `<!DOCTYPE html><html><head><script>${decrypterCode}; let encryptedContent = '${encrypted}';setupSubPage('${loginRedirect}');</script></head><body></body></html>`;
+          output = `<!DOCTYPE html><html><head><script>${decrypterCode};SiteCrypt.allEncryptedContentBase64 = ['${encrypted}'];SiteCrypt.setupSubPage('${loginRedirect}');</script></head><body></body></html>`;
 
 
           fs.writeFileSync(fullPath, output);

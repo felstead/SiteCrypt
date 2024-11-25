@@ -1,54 +1,77 @@
 # SiteCrypt
 
-Password protect static sites purely on the client side - no backend required!  This allows you to host password protected content anywhere you can host HTML, like AWS S3, Render, Cloudflare, etc.
+Password protect static sites purely on the client side - no backend required!  This allows you to host password protected content anywhere you can host static web content like [AWS S3 Static Websites](https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteHosting.html), [Render Static Sites](https://render.com/docs/static-sites), [Cloudflare Pages](https://pages.cloudflare.com/), etc.
 
-> TODO: Add example
+Try it out here! <a href="https://felstead.github.io/SiteCrypt/">Example site protected by SiteCrypt</a>. <i>Hint: the password is <b>secret123</b></i>
 
 Inspired by [PageCrypt](https://pagecrypt.maxlaumeister.com/) by Maximillian Laumeister. 
 
-## Get Started
-
-SiteCrypt will take your static HTML content and password protect it using the client side webcrypto framework.
+## How to use SiteCrypt
+SiteCrypt will take your static HTML content and password protect it using the client side webcrypto framework.  Note that **ONLY THE HTML PAGES ARE ENCRYPTED** - any linked data like your javascript, CSS, images, etc, are all stored unencrypted.  If you want to encrypt these as well, I recommend inlining them using `<style>` and `<script>` tags, and using [Data URLs](https://developer.mozilla.org/en-US/docs/Web/URI/Schemes/data) for images such that this external content is embedded in your page.
 
 It expects that you will have a "login" page and that all other pages under that will redirect back to that page when the password has not been supplied.
 
-To run it:
-`npm run encrypt -- --input-path=./example_site --output-path=./example_site_built --password=supersecret123 --login-file=index.html --login-redirect=/`
-
-1. Install
-2. Mark up your landing page by adding an HTML class to the main content you want to password protect.  This will replace that content with the login form, e.g.
+1. Install SiteCrypt: `npm i sitecrypt -g`
+2. Mark up your login page by adding an HTML class `_siteCrypt-protected` to the sections you want to protect, for example:
 
 ```html
-    <html>
-      <head>
-        <title>SiteCrypt Protected Page</title>
-      </head>
-      <body>
+<html>
+    <head>
+    <title>SiteCrypt Protected Page</title>
+    </head>
+        <body>
         <!-- The header and footer will NOT be password protected -->
         <header>
-          <h1>Welcome to my secret site!</h1>
+            <h1>Welcome to my secret site!</h1>
         </header>
         <!-- The content of this div will be replaced with a login form prompting the user for the password -->
         <div id="main" class="_siteCrypt-protected">
-          <section>
+            <section>
             <h2>Secret plans for world domination!!!</h2>
             <ul>
-              <!-- Each of these pages will be password protected, and if you try to navigate to them directly, you'll be redirected back to the landing page -->
-              <li>Step 1: <a href="/step1.html">Open a coffee shop</a></li>
-              <li>Step 2: <a href="/step2.html">TBD</a></li>
-              <li>Step 3: <a href="/step3.html">Achieve world domination!</a></li>
+                <!-- Each of these pages will be password protected, and if you try to navigate to them directly, you'll be redirected back to the landing page -->
+                <li>Step 1: <a href="/step1.html">Open a coffee shop</a></li>
+                <li>Step 2: <a href="/step2.html">TBD</a></li>
+                <li>Step 3: <a href="/step3.html">Achieve world domination!</a></li>
             </ul>
-          </section>
+            </section>
         </div>
         <footer class="_siteCrypt-protected">
-          <p>&copy; 2024 - Definitely Not World Domination Inc.</p>
+            <p>&copy; 2024 - Definitely Not World Domination Inc.</p>
         </footer>
-      </body>
-    </html>
+    </body>
+</html>
+```
+3. Encrypt your site
+To run the encryption, point sitecrypt at the directory you want to encrypt, and it will process all the HTML pages in there, outputting them to `output-path`:
+
+```
+sitecrypt --input-path=PATH_TO_YOUR_SITE --output-path=SOME_OUTPUT_PATH --password=A_STRONG_PASSWORD --login-file=YOUR_LANDING_PAGE.html --login-redirect=/PATH_TO_YOUR_LOGIN_PAGE_ON_YOUR_SITE
+```
+
+4. Deploy your encrypted pages!
+Simply deploy the built pages specified in `output-path` to your hosting provider!
+
+### Permalinks
+If you want to auto-login someone, you can provide a link to your site with the password already embedded by appending it to the URI, for example:
+
+```
+https://mystaticsite.com/page.html#pw=MY_PASSWORD
+```
+
+Here is an example permalink to the example site: https://felstead.github.io/SiteCrypt/#pw=secret123
+
+### Logging out
+You can logout simply by calling `SiteCrypt.logout()` on any of the encrypted pages.  Or embed a button, like so:
+
+```html
+<button onclick="SiteCrypt.logout()">Logout</button>
 ```
 
 ## How does it work?
 When you build your site with SiteCrypt, all of the protected HTML content is encrypted based on a password that is run through a key derivation function, specifically [PBKDF2](https://en.wikipedia.org/wiki/PBKDF2) with [SHA-256](https://en.wikipedia.org/wiki/SHA-2), by default with 600k iterations, as [recommended by OWASP in 2023](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#pbkdf2).  The encrypted data is stored in embedded Javascript variables, and if the correct password is provided, it is decrypted entirely in the browser and the page content is replaced with the decrypted content.  No decrypted data ever leaves the users' machine!
+
+The password is stored in local session storage for the duration of the users' session such that they do not need to enter their password for every sub page.
 
 ## Is it secure?
 ### Short answer
@@ -71,7 +94,6 @@ However, bear in mind that this is the case for logging into more or less any on
 3. **Compromising the password in some other way**
 
 If someone gets the password, they can decrypt the content, assuming they have a copy of it.  Protect your credentials!
-
 
 ## License
 
