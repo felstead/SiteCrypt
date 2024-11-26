@@ -1,5 +1,13 @@
 {
-  "private": true,
+  "name": "sitecrypt",
+  "repository": "https://github.com/felstead/SiteCrypt",
+  "homepage": "https://github.com/felstead/SiteCrypt",
+  "description": "Password protect your static websites fully client side, with no backend.",
+  "keywords": ["encryption", "password", "protect", "static", "website"],
+  "main": "dist/main.js",
+  "author": "David Felstead",
+  "license": "MIT",
+  "version": "1.0.0",
   "scripts": {
     "build": "tsc && minify assets/decrypt.js > assets/decrypt.min.js",
     "encrypt": "node dist/main",
@@ -8,8 +16,6 @@
   "devDependencies": {
     "@types/cheerio": "^0.22.35",
     "@types/node": "^22.9.1",
-    "dotenv": "^16.0.3",
-    "nodemon": "^3.1.7",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2",
     "minify": "^12.0.0"
@@ -18,5 +24,7 @@
     "cheerio": "^1.0.0",
     "command-line-args": "^6.0.1"
   },
-  "main": "dist/main.js"
+  "bin": {
+    "sitecrypt": "./dist/main.js"
+  }
 }
