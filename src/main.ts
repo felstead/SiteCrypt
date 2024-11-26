@@ -129,12 +129,16 @@ async function main() {
           // Generate file as the login page
           let encryptedSections = [];
 
+          const hasSpecifiedLoginForm = $('._siteCrypt-protected-login').length > 0;
+
           let index = 0;
           for (const element of $('._siteCrypt-protected')) {
             let encrypted = await encryptToBase64($(element).html(), password);
             encryptedSections.push(encrypted);
-        
-            if (index == 0) {
+
+            const shouldRenderLoginForm = hasSpecifiedLoginForm ? $(element).hasClass('_siteCrypt-protected-login') : index == 0;
+
+            if (shouldRenderLoginForm) {
               $(element).html(prompt);
             } else {
               $(element).html("<!-- ENCRYPTED SECTION -->");

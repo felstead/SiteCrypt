@@ -133,6 +133,9 @@ let SiteCrypt = {
   },
   logout: function logout() {
     sessionStorage.removeItem('_siteCrypt-password');
+    if (window.location.hash.startsWith('#pw=')) {
+      window.location.hash = '';
+    };
     window.location.reload();
   }
 };

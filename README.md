@@ -12,7 +12,9 @@ SiteCrypt will take your static HTML content and password protect it using the c
 It expects that you will have a "login" page and that all other pages under that will redirect back to that page when the password has not been supplied.
 
 1. Install SiteCrypt: `npm i sitecrypt -g`
-2. Mark up your login page by adding an HTML class `_siteCrypt-protected` to the sections you want to protect, for example:
+2. Mark up your login page by adding an HTML class `_siteCrypt-protected` to the sections you want to protect.  By default, the first element with that class will have its content replaced with the login form.  If you want a different element to contain the login form, add both classes `_siteCrypt-protected _siteCrypt-protected-login` to the class.
+
+An example is below.
 
 ```html
 <html>
@@ -24,8 +26,10 @@ It expects that you will have a "login" page and that all other pages under that
         <header>
             <h1>Welcome to my secret site!</h1>
         </header>
-        <!-- The content of this div will be replaced with a login form prompting the user for the password -->
-        <div id="main" class="_siteCrypt-protected">
+        <!-- The content of this tag will be removed and replaced during the decryption phase -->
+        <h2 id="intro" class="_siteCrypt-protected">Introducing...</h2>
+        <!-- The content of this div will be replaced with a login form prompting the user for the password since it has _siteCrypt-protected-login on it along with _siteCrypt-protected-->
+        <div id="main" class="_siteCrypt-protected _siteCrypt-protected-login">
             <section>
             <h2>Secret plans for world domination!!!</h2>
             <ul>
@@ -69,7 +73,7 @@ You can logout simply by calling `SiteCrypt.logout()` on any of the encrypted pa
 ```
 
 ## How does it work?
-When you build your site with SiteCrypt, all of the protected HTML content is encrypted based on a password that is run through a key derivation function, specifically [PBKDF2](https://en.wikipedia.org/wiki/PBKDF2) with [SHA-256](https://en.wikipedia.org/wiki/SHA-2), by default with 600k iterations, as [recommended by OWASP in 2023](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#pbkdf2).  The encrypted data is stored in embedded Javascript variables, and if the correct password is provided, it is decrypted entirely in the browser and the page content is replaced with the decrypted content.  No decrypted data ever leaves the users' machine!
+When you build your site with SiteCrypt, all of the protected HTML content is encrypted based on a password that is run through a key derivation function, specifically [PBKDF2](https://en.wikipedia.org/wiki/PBKDF2) with [SHA-256](https://en.wikipedia.org/wiki/SHA-2), by default with 600k iterations, as [recommended by OWASP in 2023](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#pbkdf2).  This derived key is then use to symmetrically encrypt the HTML content using [AES](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) in [Galois/Counter Mode](https://en.wikipedia.org/wiki/Galois/Counter_Mode), aka AES-GCM, and the encrypted data is stored in embedded Javascript variables embedded within the page. If the correct password is provided, it is decrypted entirely in the browser and the page content is replaced with the decrypted content.  No decrypted data ever leaves the users' machine!
 
 The password is stored in local session storage for the duration of the users' session such that they do not need to enter their password for every sub page.
 
@@ -79,11 +83,11 @@ The password is stored in local session storage for the duration of the users' s
 
 ### Longer answer
 
-There are really only three main attack vectors for decrypting the content encrypted with SiteCrypt:
+There are really only three main attack vectors for decrypting the content encrypted with SiteCrypt, assuming that AES-GCM and PBKDF2 with SHA256 remain unbroken which is the case as of 2024 and is expected to be for the foreseeable future.
 
 1. **Brute-forcing the password**
 
-The password is encrypted with [PBKDF2](https://en.wikipedia.org/wiki/PBKDF2)-HMAC-[SHA-256](https://en.wikipedia.org/wiki/SHA-2), by default with 600k iterations, as [recommended by OWASP in 2023](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#pbkdf2).  This is considered a secure way to store passwords and provides resistance against brute-force attacks given the high computational cost of each "guess" due to the large number of iterations.  That said, if your password is weak (e.g. it is short, or is a dictionary word, or a common password) it will be much easier to brute-force.  A [strong, unique password](https://www.lastpass.com/features/password-generator) will be effectively impossible to brute-force.
+The password is derived with [PBKDF2](https://en.wikipedia.org/wiki/PBKDF2)-HMAC-[SHA-256](https://en.wikipedia.org/wiki/SHA-2), by default with 600k iterations, as [recommended by OWASP in 2023](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#pbkdf2).  This is considered a secure way to store passwords and provides resistance against brute-force attacks given the high computational cost of each "guess" due to the large number of iterations.  That said, if your password is weak (e.g. it is short, or is a dictionary word, or a common password) it will be much easier to brute-force.  A [strong, unique password](https://www.lastpass.com/features/password-generator) will be effectively impossible to brute-force.
 
 2. **Stealing the key from local storage after decryption**
 
