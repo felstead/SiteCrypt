@@ -109,10 +109,10 @@ async function main() {
   }
 
   // Setup our templates
-  const style = fs.readFileSync('./assets/passwordFormDefaultStyle.css', 'utf8');
-  const prompt = fs.readFileSync('./assets/_passwordPrompt.html', 'utf8');
-  const decrypterCode = fs.readFileSync('./assets/decrypt.min.js', 'utf8');
-  const license = fs.readFileSync('./LICENSE', 'utf8');
+  const style = fs.readFileSync(__dirname + '/../assets/passwordFormDefaultStyle.css', 'utf8');
+  const prompt = fs.readFileSync(__dirname + '/../assets/_passwordPrompt.html', 'utf8');
+  const decrypterCode = fs.readFileSync(__dirname + '/../assets/decrypt.min.js', 'utf8');
+  const license = fs.readFileSync(__dirname + '/../LICENSE', 'utf8');
 
   // Iterate through all the .html files in the output dir
   const processDir = async (dir: string) => {
