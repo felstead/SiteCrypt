@@ -7,7 +7,7 @@
   "main": "dist/main.js",
   "author": "David Felstead",
   "license": "MIT",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "build": "tsc && minify assets/decrypt.js > assets/decrypt.min.js",
     "encrypt": "node dist/main",
